@@ -1,29 +1,26 @@
-#ifndef INCLUDED_rbms_H
-#define INCLUDED_rbms_H
+#ifndef INCLUDED_RBMS_H
+#define INCLUDED_RBMS_H
 
 #include "mbed.h"
+#include <cstdint>
 
+template <int MOTOR_NUM>
 class rbms {
-    public:
-        rbms(CAN &can,bool* motor_type,int motor_num);
-        int rbms_send(int* motor);
-        void rbms_read(CANMessage &msg, int64_t *rotation,short *speed);
-        void can_read();
-        float pid(float T,short rpm_now, short set_speed,float *delta_rpm_pre,float *ie,float KP=25,float KI=10, float KD=0);
-        void spd_control(int* set_speed,int* motor);
-        
-    private:
-        CANMessage _canMessage,_canMessage2,_msg;
-        CAN &_can;
-        bool* _motor_type;//if 0 m2006,if 1 m3508
-        int _motor_num;
-        int*_motor_max;
-        unsigned short _r;
-        int64_t _rotation;
-        int _speed;
-        int _torque;
-        int _temperature;
+public:
+    rbms(const bool* motor_type);
+    void encode_rbms_data(const int* motor, CANMessage& msg1, CANMessage& msg2);
+    bool decode_rbms_data(const CANMessage& msg, int& motor_id, int64_t& rotation, short& speed);
+    float vel_pid(float T, short rpm_now, short set_speed, float* delta_rpm_pre, float* ie, float KP = 25.0f, float KI = 10.0f, float KD = 0.0f);
+
+private:
+    const bool* _motor_type;
+    int64_t _rotations[MOTOR_NUM];
+    uint16_t _raw_angle;
+    int16_t _raw_speed;
+    int16_t _raw_torque;
+    uint8_t _temperature;
 };
 
+#include "rbms.cpp.h"
 
-#endif
+#endif // INCLUDED_RBMS_H
