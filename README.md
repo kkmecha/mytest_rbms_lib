@@ -1,4 +1,4 @@
-# limitless_rbms_lib  
+# mytest_rbms_lib  
 このrbms.hでできること  
 ・同一CANバスでm2006, m3508を回せる  
 ・アブソリュート->疑似インクリメントに  
