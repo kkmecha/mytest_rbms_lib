@@ -10,6 +10,7 @@ PID::PID(float _u_max, float _u_min)
     pre_error = 0;
     pre_prop = 0;
     prop = 0;
+    pre_actual = 0;
 };
 
 float PID::pos_type_pid(float KP, float KI, float KD, float set_point, float actual, float dt){
@@ -54,6 +55,7 @@ float PID::i_pd(float KP, float KI, float KD, float set_point, float actual, flo
     output = KI * integral - KP * actual - KD * deriv;
     output = clamp(output, u_min, u_max);
     
+    pre_actual = actual;
     return output;
 }
 
